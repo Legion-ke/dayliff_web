@@ -21,7 +21,7 @@ export const getMenuItems = () => {
           exact: true,
         },
         {
-          href: `/tasks/routes/`,
+          href: `/tasks/route/`,
           icon: <i className="bx bx-book" />,
           title: "Routes",
           exact: true,

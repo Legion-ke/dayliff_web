@@ -5,8 +5,8 @@ import Directions from "./route";
 export default function Tasks() {
   return (
     <Routes>
-      <Route index element={<Orders />} />
-      <Route path="route" element={<Directions/>} />
+      <Route path="orders" element={<Orders />} />
+      <Route path="route" element={<Directions />} />
     </Routes>
   );
 }
