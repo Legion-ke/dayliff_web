@@ -13,8 +13,8 @@ export default function MainPage() {
       <PageContent>
         <Routes>
           <Route path="*" element={<Dashboard />} />
-          <Route path="/management" element={<Managements />} />
-          <Route path="/orders" element={<OrderManagement />} />
+          <Route path="management/*" element={<Managements />} />
+          <Route path="orders/*" element={<OrderManagement />} />
         </Routes>
       </PageContent>
     </>

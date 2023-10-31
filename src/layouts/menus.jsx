@@ -31,12 +31,7 @@ export const getMenuItems = () => {
           title: "Users",
           exact: true,
         },
-        {
-          href: `/management/drivers`,
-          icon: <i className="bx bx-book" />,
-          title: "Drivers",
-          exact: true,
-        },
+
         {
           href: `/management/vehicles`,
           icon: <i className="bx bx-book" />,

@@ -14,7 +14,7 @@ import { Stack } from "@mui/material";
 const initForm = {
   regNo: "",
   loadCapacity: "",
-  vehicletype: "",
+  vehicleType: "",
 };
 
 export default function Vehicles() {
@@ -154,7 +154,7 @@ export default function Vehicles() {
         onRowClicked={handleEdit}
         buttons={[
           {
-            children: "New User",
+            children: "New Vehicles",
             onClick: handleNew,
           },
         ]}
@@ -162,23 +162,20 @@ export default function Vehicles() {
       <Modal
         open={open}
         onClose={toggleModal}
-        title={`${selected ? "Edit" : "New"} User`}
+        title={`${selected ? "Edit" : "New"} Vehicle`}
         size="large"
       >
         <form onSubmit={onSubmit}>
           <FieldRender
             fields={[
-              createField("name", "Name", {
+              createField("regNo", "Registration No", {
                 value: formData?.name,
               }),
-              createField("email", "Email", {
+              createField("loadCapacity", "Load Capacity", {
                 value: formData?.email,
               }),
-              createField("phone", "Phone Number", {
+              createField("vehicleType", "Vehicle Type", {
                 value: formData?.phone,
-              }),
-              createField("profession", "Profession", {
-                value: formData?.profession,
               }),
             ]}
           />

@@ -12,10 +12,7 @@ import { FieldRender, useFormData } from "../../components/forms";
 import { Stack } from "@mui/material";
 
 const initForm = {
-  name: "",
-  email: "",
-  phone: "",
-  profession: "",
+  orderNo: "",
 };
 
 export default function Orders() {
@@ -125,21 +122,8 @@ export default function Orders() {
 
   const columns = [
     {
-      name: "Name",
+      name: "OrderNo",
       selector: (row) => <TextView primary={row.name} />,
-    },
-
-    {
-      name: "email",
-      selector: (row) => <TextView primary={row.email} />,
-    },
-    {
-      name: "Phone Number",
-      selector: (row) => <TextView primary={row.phone} />,
-    },
-    {
-      name: "Profession",
-      selector: (row) => <TextView primary={row.profession} />,
     },
 
     {
@@ -159,7 +143,7 @@ export default function Orders() {
         onRowClicked={handleEdit}
         buttons={[
           {
-            children: "New User",
+            children: "New Order",
             onClick: handleNew,
           },
         ]}
@@ -175,15 +159,6 @@ export default function Orders() {
             fields={[
               createField("name", "Name", {
                 value: formData?.name,
-              }),
-              createField("email", "Email", {
-                value: formData?.email,
-              }),
-              createField("phone", "Phone Number", {
-                value: formData?.phone,
-              }),
-              createField("profession", "Profession", {
-                value: formData?.profession,
               }),
             ]}
           />

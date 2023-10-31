@@ -15,6 +15,7 @@ const initForm = {
   name: "",
   email: "",
   phone: "",
+  role: null,
 };
 
 export default function Users() {
@@ -137,7 +138,7 @@ export default function Users() {
       selector: (row) => <TextView primary={row.phone} />,
     },
     {
-      name: "Profession",
+      name: "Role",
       selector: (row) => <TextView primary={row.profession} />,
     },
 
@@ -181,7 +182,7 @@ export default function Users() {
               createField("phone", "Phone Number", {
                 value: formData?.phone,
               }),
-              createField("profession", "Profession", {
+              createField("role", "Role", {
                 value: formData?.profession,
               }),
             ]}
