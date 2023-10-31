@@ -4,7 +4,7 @@ import PageContent from "../common/content";
 import Dashboard from "../pages/Dashboard";
 import { getMenuItems } from "./menus";
 import Managements from "../pages/management";
-import OrderManagement from "../pages/Orders";
+import Tasks from "../pages/Tasks";
 
 export default function MainPage() {
   return (
@@ -14,7 +14,7 @@ export default function MainPage() {
         <Routes>
           <Route path="*" element={<Dashboard />} />
           <Route path="management/*" element={<Managements />} />
-          <Route path="orders/*" element={<OrderManagement />} />
+          <Route path="tasks/*" element={<Tasks />} />
         </Routes>
       </PageContent>
     </>

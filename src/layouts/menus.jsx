@@ -15,9 +15,15 @@ export const getMenuItems = () => {
       title: "Tasks",
       items: [
         {
-          href: `/orders/`,
+          href: `/tasks/orders/`,
           icon: <i className="bx bx-book" />,
           title: "Orders",
+          exact: true,
+        },
+        {
+          href: `/tasks/routes/`,
+          icon: <i className="bx bx-book" />,
+          title: "Routes",
           exact: true,
         },
       ],
