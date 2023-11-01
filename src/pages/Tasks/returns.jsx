@@ -14,13 +14,12 @@ import { Stack } from "@mui/material";
 const initForm = {
   order_id: "",
   customer_name: "",
-  customer_phone:"",
+  customer_phone: "",
   return_date: "",
-  delivery_date:"",
+  delivery_date: "",
   destination_address: "",
-  return_status:" ",
-  route_id:"",
-
+  return_status: " ",
+  route_id: "",
 };
 
 export default function Returns() {
@@ -134,34 +133,30 @@ export default function Returns() {
 
   const columns = [
     {
-        name: "Order ID",
-        selector: (row) => <TextView primary={row.order_id} />,
+      name: "Order ID",
+      selector: (row) => <TextView primary={row.order_id} />,
     },
     {
-        name: "Customer Phone",
-        selector: (row) => <TextView primary={row.customer_phone} />,
+      name: "Customer Phone",
+      selector: (row) => <TextView primary={row.customer_phone} />,
     },
     {
-        name: "Return Date",
-        selector: (row) => <TextView primary={row.return_date} />,
+      name: "Return Date",
+      selector: (row) => <TextView primary={row.return_date} />,
     },
     {
-        name: "Delivery Date",
-        selector: (row) => <TextView primary={row.delivery_date} />,
+      name: "Delivery Date",
+      selector: (row) => <TextView primary={row.delivery_date} />,
     },
     {
-        name: "Destination Address",
-        selector: (row) => <TextView primary={row.destination_address} />,
+      name: "Destination Address",
+      selector: (row) => <TextView primary={row.destination_address} />,
     },
     {
-        name: "Return Status",
-        selector: (row) => <TextView primary={row.return_status} />,
+      name: "Status",
+      selector: (row) => <TextView primary={row.return_status} />,
+    },
 
-    },
-    {
-        name: "Route ID",
-        selector: (row) => <TextView primary={row.route_id} />,
-    },
     {
       selector: (row) => <TableMenus options={dropMenuOptions} row={row} />,
       ...actionProps,
@@ -217,8 +212,6 @@ export default function Returns() {
               createField("route_id", "Route ID", {
                 value: formData?.name,
               }),
-
-
             ]}
           />
           <Stack

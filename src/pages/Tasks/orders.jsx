@@ -9,7 +9,7 @@ import { SmoothBox } from "../../common/styled";
 import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
-import { Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 
 const initForm = {
   orderNo: "",
@@ -107,6 +107,17 @@ export default function Orders() {
     });
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "delivered":
+        return "success";
+      case "processing":
+        return "info";
+      default:
+        return "warning";
+    }
+  };
+
   let dropMenuOptions = [
     {
       title: "Edit",
@@ -124,6 +135,38 @@ export default function Orders() {
     {
       name: "OrderNo",
       selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Customer",
+      selector: (row) => <TextView primary={row.name} secondary={row.name} />,
+    },
+
+    {
+      name: "Destination Address",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Route",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Order Date",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Delivery date",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Status",
+      selector: () => (
+        <Chip
+          label="delivery"
+          color={getStatusColor("delivery")}
+          size=""
+          variant="outlined"
+        />
+      ),
     },
 
     {
@@ -151,7 +194,7 @@ export default function Orders() {
       <Modal
         open={open}
         onClose={toggleModal}
-        title={`${selected ? "Edit" : "New"} User`}
+        title={`${selected ? "Edit" : "New"} Order`}
         size="large"
       >
         <form onSubmit={onSubmit}>

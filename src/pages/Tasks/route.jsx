@@ -9,7 +9,7 @@ import { SmoothBox } from "../../common/styled";
 import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
-import { Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 
 const initForm = {
   orderNo: "",
@@ -38,6 +38,17 @@ export default function Directions() {
     setSelected(null);
     setFormData(initForm);
     toggleModal();
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "delivered":
+        return "success";
+      case "processing":
+        return "info";
+      default:
+        return "warning";
+    }
   };
 
   const deleteData = (id) => {
@@ -122,10 +133,40 @@ export default function Directions() {
 
   const columns = [
     {
-      name: "OrderNo",
+      name: "Route ID",
       selector: (row) => <TextView primary={row.name} />,
     },
-
+    {
+      name: "Driver",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Origin Address",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Destination address",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Distance(km)",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Estimate Duration(min)",
+      selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+      name: "Status",
+      selector: () => (
+        <Chip
+          label="delivery"
+          color={getStatusColor("delivery")}
+          size=""
+          variant="outlined"
+        />
+      ),
+    },
     {
       selector: (row) => <TableMenus options={dropMenuOptions} row={row} />,
       ...actionProps,
