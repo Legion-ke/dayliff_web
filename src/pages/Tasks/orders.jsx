@@ -57,7 +57,7 @@ export default function Orders() {
   const deleteData = (id) => {
     del(`/husers/${id}`)
       .then(() => {
-        alertSuccess(`staff deleted successfully`);
+        alertSuccess(`Order deleted successfully`);
         refetch();
       })
       .catch((err) => {
@@ -68,10 +68,11 @@ export default function Orders() {
   const handleEdit = (row) => {
     setSelected(row);
     setFormData({
-      name: row.name,
-      email: row.email,
-      phone: row.phone,
-      profession: row.profession,
+      order_id: row.order_id,
+      customer_name: row.customer_name,
+      customer_phone: row.customer_phone,
+      destination_address: row.destination_address,
+      route: row.profession,
     });
     toggleModal();
   };
@@ -98,7 +99,7 @@ export default function Orders() {
 
     put(`/husers/${selected.id}`, data)
       .then(() => {
-        alertSuccess(`User updated successfully`);
+        alertSuccess(`Order updated successfully`);
         toggleModal();
         refetch();
       })
@@ -109,7 +110,7 @@ export default function Orders() {
   const createData = () => {
     post(`/husers`, formData)
       .then(() => {
-        alertSuccess(`User created successfully`);
+        alertSuccess(`Order created successfully`);
         toggleModal();
         refetch();
       })
@@ -120,8 +121,8 @@ export default function Orders() {
 
   const deleteVendor = (row) => {
     confirm({
-      title: "Delete user!",
-      message: "Are you sure you want to delete this User?",
+      title: "Delete Order!",
+      message: "Are you sure you want to delete this Order?",
       onConfirm: () => {
         deleteData(row.id);
       },
@@ -256,6 +257,14 @@ export default function Orders() {
 
                 value: formData?.delivery_date,
               }),
+              createField("destination_address", "Destination Address", {
+                value: formData?.destination_address,
+              }),
+              createField("route_id", "Route ID", {
+                value: formData?.route_id,
+              }),
+              //Add status card here
+
             ]}
           />
           <Stack

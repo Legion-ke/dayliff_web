@@ -9,14 +9,10 @@ import { SmoothBox } from "../../common/styled";
 import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
-import { Chip, Stack, TextField } from "@mui/material";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Chip, Stack } from "@mui/material";
 
 const initForm = {
-  distance_in_km: "",
-  estimated_duration_minutes: "",
-  destination_address: null,
-  origin_address: null,
+  orderNo: "",
 };
 
 export default function Directions() {
@@ -46,21 +42,10 @@ export default function Directions() {
     toggleModal();
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "delivered":
-        return "success";
-      case "processing":
-        return "info";
-      default:
-        return "warning";
-    }
-  };
-
   const deleteData = (id) => {
     del(`/husers/${id}`)
       .then(() => {
-        alertSuccess(`staff deleted successfully`);
+        alertSuccess(`route deleted successfully`);
         refetch();
       })
       .catch((err) => {
@@ -71,10 +56,14 @@ export default function Directions() {
   const handleEdit = (row) => {
     setSelected(row);
     setFormData({
-      name: row.name,
-      email: row.email,
-      phone: row.phone,
-      profession: row.profession,
+      route_id: row.route_id,
+      driver_id: row.driver_id,
+      route_name: row.route_name,
+      origin_address: row.origin_address,
+      destination_address: row.destination_address,
+      distance_in_km:row.distance_in_km,
+      estimated_duration_minutes:row.estimated_duration_minutes,
+      status:row.status,
     });
     toggleModal();
   };
@@ -94,7 +83,7 @@ export default function Directions() {
 
     put(`/husers/${selected.id}`, data)
       .then(() => {
-        alertSuccess(`User updated successfully`);
+        alertSuccess(`route updated successfully`);
         toggleModal();
         refetch();
       })
@@ -116,8 +105,8 @@ export default function Directions() {
 
   const deleteVendor = (row) => {
     confirm({
-      title: "Delete user!",
-      message: "Are you sure you want to delete this User?",
+      title: "Delete Route!",
+      message: "Are you sure you want to delete this route?",
       onConfirm: () => {
         deleteData(row.id);
       },
@@ -143,46 +132,33 @@ export default function Directions() {
       selector: (row) => <TextView primary={row.route_id} />,
     },
     {
-      name: "Driver",
-      selector: (row) => <TextView primary={row.name} />,
+      name: "Driver ID",
+      selector: (row) => <TextView primary={row.driver_id} />,
     },
     {
       name: "Origin Address",
-      selector: (row) => (
-        <TextView
-          primary={row.origin_address.lat}
-          secondary={row.origin_address.long}
-        />
-      ),
+      selector: (row) => <TextView primary={row.name} />,
     },
     {
       name: "Destination address",
-      selector: (row) => (
-        <TextView
-          primary={row.destination_address.lat}
-          secondary={row.destination_address.long}
-        />
-      ),
+      selector: (row) => <TextView primary={row.name} />,
     },
     {
       name: "Distance(km)",
-      selector: (row) => <TextView primary={row.distance_in_km} />,
+      selector: (row) => <TextView primary={row.name} />,
     },
     {
       name: "Estimate Duration(min)",
-      selector: (row) => <TextView primary={row.estimated_duration_minutes} />,
+      selector: (row) => <TextView primary={row.name} />,
     },
     {
       name: "Status",
-      selector: () => (
-        <Chip
-          label="delivery"
-          color={getStatusColor("delivery")}
-          size=""
-          variant="outlined"
-        />
-      ),
+      selector: (row) => <TextView primary={row.status} />,
     },
+
+
+
+
     {
       selector: (row) => <TableMenus options={dropMenuOptions} row={row} />,
       ...actionProps,
@@ -237,25 +213,12 @@ export default function Directions() {
         size="large"
       >
         <form onSubmit={onSubmit}>
-          <MapContainer
-            center={[51.505, -0.09]} // Initial map center
-            zoom={13}
-            style={{ height: "400px", width: "100%" }}
-            onClick={handleMapClick}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {position && (
-              <Marker position={position}>
-                <Popup>Your selected location</Popup>
-              </Marker>
-            )}
-          </MapContainer>
-          <TextField
-            label="Address"
-            variant="outlined"
-            value={address}
-            onChange={handleAddressChange}
-            style={{ marginTop: "10px" }}
+          <FieldRender
+            fields={[
+              createField("name", "Name", {
+                value: formData?.name,
+              }),
+            ]}
           />
           <Stack
             direction="row"

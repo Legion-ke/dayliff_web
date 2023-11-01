@@ -117,7 +117,6 @@ export default function Returns() {
       },
     });
   };
-
   let dropMenuOptions = [
     {
       title: "Edit",
@@ -152,11 +151,7 @@ export default function Returns() {
       name: "Destination Address",
       selector: (row) => <TextView primary={row.destination_address} />,
     },
-    {
-      name: "Status",
-      selector: (row) => <TextView primary={row.return_status} />,
-    },
-
+    //Add cards for status here
     {
       selector: (row) => <TableMenus options={dropMenuOptions} row={row} />,
       ...actionProps,
@@ -189,28 +184,28 @@ export default function Returns() {
           <FieldRender
             fields={[
               createField("order_ID:", "Order ID", {
-                value: formData?.name,
+                value: formData?.order_ID,
               }),
               createField("customer_name", "Customer Name", {
-                value: formData?.name,
+                value: formData?.customer_name,
               }),
               createField("customer_phone", "Customer Phone", {
-                value: formData?.name,
+                value: formData?.customer_phone,
               }),
               createField("return_date", "Return Date", {
-                value: formData?.name,
+                value: formData?.return_date,
               }),
               createField("delivery_date", "Delivery Date", {
-                value: formData?.name,
+                value: formData?.delivery_date,
               }),
               createField("destination_address", "Destination Address", {
-                value: formData?.name,
+                value: formData?.destination_address,
               }),
               createField("return_status", "Return Status", {
-                value: formData?.name,
+                value: formData?.return_status,
               }),
               createField("route_id", "Route ID", {
-                value: formData?.name,
+                value: formData?.route_id,
               }),
             ]}
           />

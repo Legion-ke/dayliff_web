@@ -169,13 +169,13 @@ export default function Vehicles() {
           <FieldRender
             fields={[
               createField("regNo", "Registration No", {
-                value: formData?.name,
+                value: formData?.regNo,
               }),
               createField("loadCapacity", "Load Capacity", {
-                value: formData?.email,
+                value: formData?.loadCapacity,
               }),
               createField("vehicleType", "Vehicle Type", {
-                value: formData?.phone,
+                value: formData?.vehicleType,
               }),
             ]}
           />
