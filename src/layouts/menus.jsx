@@ -32,12 +32,12 @@ export const getMenuItems = () => {
           title: "Returns",
           exact: true,
         },
-        {
-          href: `/tasks/rconfirmation/`,
-          icon: <i className="bx bx-book" />,
-          title: "Return Confirmation",
-          exact: true,
-        },
+        // {
+        //   href: `/tasks/rconfirmation/`,
+        //   icon: <i className="bx bx-book" />,
+        //   title: "Return Confirmation",
+        //   exact: true,
+        // },
       ],
     },
     {
