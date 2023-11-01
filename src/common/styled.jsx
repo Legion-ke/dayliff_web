@@ -78,10 +78,11 @@ export const SideNavGroupBody = styled(Box)`
     text-decoration: none !important;
     color: inherit !important;
     &:hover {
-      background-color: #ebebeb;
+      background-color: #6c63ff42;
     }
     &.active {
-      background-color: #6c63ff42;
+      background-color: #0082d6;
+      color: #ffffff !important;
     }
     i {
       margin-right: 20px;
