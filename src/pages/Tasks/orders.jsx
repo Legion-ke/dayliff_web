@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { CButton, Modal, Table, useAlerts } from "ochom-react-components";
 import { Edit } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,22 +11,35 @@ import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
 import { Chip, Stack } from "@mui/material";
+import moment from "moment/moment";
 
 const initForm = {
   orderNo: "",
+  customer_name: "",
+  customer_phone: "",
+  order_status: null,
+  delivery_date: "",
+  destination_address: null,
+  route_id: null,
 };
-
+const statusType = [
+  { value: "PENDING", label: "Pending" },
+  { value: "TRANSIT", label: "Transit" },
+  { value: "COMPLETED", label: "Completed" },
+  { value: "CANCELLED", label: "Cancelled" },
+  { value: "PARTIAL", label: "Partial" },
+];
 export default function Orders() {
   const { confirm, alertError, alertSuccess } = useAlerts();
   const {
-    data: users,
+    data: orders,
     loading,
     error,
     put,
     del,
     post,
     refetch,
-  } = useAPI("/husers");
+  } = useAPI("/orders");
   const { createField, formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
@@ -70,6 +84,13 @@ export default function Orders() {
     } else {
       createData({ variables: { data } });
     }
+  };
+
+  const statusChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      order_status: e.target.value,
+    }));
   };
 
   const updateData = () => {
@@ -134,16 +155,23 @@ export default function Orders() {
   const columns = [
     {
       name: "OrderNo",
-      selector: (row) => <TextView primary={row.name} />,
+      selector: (row) => <TextView primary={row._id} />,
     },
     {
       name: "Customer",
-      selector: (row) => <TextView primary={row.name} secondary={row.name} />,
+      selector: (row) => (
+        <TextView primary={row.customer_name} secondary={row.customer_phone} />
+      ),
     },
 
     {
       name: "Destination Address",
-      selector: (row) => <TextView primary={row.name} />,
+      selector: (row) => (
+        <TextView
+          primary={row.destination_address.long}
+          secondary={row.destination_address.lat}
+        />
+      ),
     },
     {
       name: "Route",
@@ -151,11 +179,15 @@ export default function Orders() {
     },
     {
       name: "Order Date",
-      selector: (row) => <TextView primary={row.name} />,
+      selector: (row) => (
+        <TextView primary={moment(row.created_at).format("DD/MM/YYYY")} />
+      ),
     },
     {
       name: "Delivery date",
-      selector: (row) => <TextView primary={row.name} />,
+      selector: (row) => (
+        <TextView primary={moment(row.delivery_date).format("DD/MM/YYYY")} />
+      ),
     },
     {
       name: "Status",
@@ -181,7 +213,7 @@ export default function Orders() {
         loading={loading}
         error={error}
         columns={columns}
-        data={users.products}
+        data={orders}
         showSearch
         onRowClicked={handleEdit}
         buttons={[
@@ -200,8 +232,29 @@ export default function Orders() {
         <form onSubmit={onSubmit}>
           <FieldRender
             fields={[
-              createField("name", "Name", {
-                value: formData?.name,
+              createField("customer_name", "Customer Name", {
+                value: formData?.customer_name,
+              }),
+              createField("customer_phone", "Customer Phone ", {
+                value: formData?.customer_phone,
+              }),
+
+              createField(`order_status`, "Order Status", {
+                type: "select",
+                grow: { xs: 6 },
+                options: statusType.map((t) => ({
+                  ...t,
+                  value: t.value,
+                  label: t.label,
+                })),
+                value: formData.order_status,
+                onChange: (e) => statusChange(e),
+              }),
+              createField("delivery_date", "Deliver Date", {
+                type: "date-time",
+                grow: { xs: 6 },
+
+                value: formData?.delivery_date,
               }),
             ]}
           />

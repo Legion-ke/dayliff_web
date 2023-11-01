@@ -9,29 +9,27 @@ import { SmoothBox } from "../../common/styled";
 import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
-import { Chip, Stack, TextField } from "@mui/material";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { Stack } from "@mui/material";
 
 const initForm = {
-  distance_in_km: "",
-  estimated_duration_minutes: "",
-  destination_address: null,
-  origin_address: null,
+  name: "",
+  email: "",
+  phone: "",
+  role: null,
 };
 
-export default function Directions() {
+export default function Drivers() {
   const { confirm, alertError, alertSuccess } = useAlerts();
   const {
-    data: routes,
+    data: drivers,
     loading,
     error,
     put,
     del,
     post,
     refetch,
-  } = useAPI("/routes");
-  console.log("am orders: ", routes);
-
+  } = useAPI("/drivers");
+  console.log("drivers: ", drivers);
   const { createField, formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
@@ -46,21 +44,10 @@ export default function Directions() {
     toggleModal();
   };
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "delivered":
-        return "success";
-      case "processing":
-        return "info";
-      default:
-        return "warning";
-    }
-  };
-
   const deleteData = (id) => {
     del(`/husers/${id}`)
       .then(() => {
-        alertSuccess(`staff deleted successfully`);
+        alertSuccess(`Driver deleted successfully`);
         refetch();
       })
       .catch((err) => {
@@ -94,7 +81,7 @@ export default function Directions() {
 
     put(`/husers/${selected.id}`, data)
       .then(() => {
-        alertSuccess(`User updated successfully`);
+        alertSuccess(`Driver updated successfully`);
         toggleModal();
         refetch();
       })
@@ -103,9 +90,9 @@ export default function Directions() {
       });
   };
   const createData = () => {
-    post(`/routes`, formData)
+    post(`/husers`, formData)
       .then(() => {
-        alertSuccess(`Route created successfully`);
+        alertSuccess(`User created successfully`);
         toggleModal();
         refetch();
       })
@@ -124,6 +111,17 @@ export default function Directions() {
     });
   };
 
+  //   const getStatusColor = (status) => {
+  //     switch (status) {
+  //       case "active":
+  //         return "success";
+  //       case "processing":
+  //         return "info";
+  //       default:
+  //         return "warning";
+  //     }
+  //   };
+
   let dropMenuOptions = [
     {
       title: "Edit",
@@ -139,80 +137,35 @@ export default function Directions() {
 
   const columns = [
     {
-      name: "Route ID",
-      selector: (row) => <TextView primary={row.route_id} />,
+      name: "User ID",
+      selector: (row) => <TextView primary={row._id} />,
     },
     {
-      name: "Driver",
+      name: "Name",
       selector: (row) => <TextView primary={row.name} />,
     },
     {
-      name: "Origin Address",
-      selector: (row) => (
-        <TextView
-          primary={row.origin_address.lat}
-          secondary={row.origin_address.long}
-        />
-      ),
+      name: "email",
+      selector: (row) => <TextView primary={row.email} />,
     },
     {
-      name: "Destination address",
-      selector: (row) => (
-        <TextView
-          primary={row.destination_address.lat}
-          secondary={row.destination_address.long}
-        />
-      ),
+      name: "Phone Number",
+      selector: (row) => <TextView primary={row.phone_number} />,
     },
     {
-      name: "Distance(km)",
-      selector: (row) => <TextView primary={row.distance_in_km} />,
+      name: "Role",
+      selector: (row) => <TextView primary={row.role} />,
     },
     {
-      name: "Estimate Duration(min)",
-      selector: (row) => <TextView primary={row.estimated_duration_minutes} />,
+      name: "Vehicle Assigned",
+      selector: (row) => <TextView primary={row.vehicleAssigned} />,
     },
-    {
-      name: "Status",
-      selector: () => (
-        <Chip
-          label="delivery"
-          color={getStatusColor("delivery")}
-          size=""
-          variant="outlined"
-        />
-      ),
-    },
+
     {
       selector: (row) => <TableMenus options={dropMenuOptions} row={row} />,
       ...actionProps,
     },
   ];
-
-  const [position, setPosition] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
-  const [address, setAddress] = useState("");
-
-  const handleMapClick = (e) => {
-    const { lat, lng } = e.latlng;
-    setPosition([lat, lng]);
-    setSelectedLocation({ latitude: lat, longitude: lng });
-  };
-
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-  };
-
-  const calculateDistance = () => {
-    // You can calculate the distance between two points (selectedLocation and another location) here using geolib.
-    // For demonstration, let's calculate the distance to a hardcoded point.
-    const otherLocation = { latitude: 51.5, longitude: 0 };
-    const distance = getDistance(selectedLocation, otherLocation);
-    alert(`Distance: ${distance} meters`);
-  };
   return (
     <SmoothBox>
       <Table
@@ -220,12 +173,12 @@ export default function Directions() {
         loading={loading}
         error={error}
         columns={columns}
-        data={routes}
+        data={drivers}
         showSearch
         onRowClicked={handleEdit}
         buttons={[
           {
-            children: "New Route",
+            children: "New Driver",
             onClick: handleNew,
           },
         ]}
@@ -233,29 +186,25 @@ export default function Directions() {
       <Modal
         open={open}
         onClose={toggleModal}
-        title={`${selected ? "Edit" : "New"} Route`}
+        title={`${selected ? "Edit" : "New"} User`}
         size="large"
       >
         <form onSubmit={onSubmit}>
-          <MapContainer
-            center={[51.505, -0.09]} // Initial map center
-            zoom={13}
-            style={{ height: "400px", width: "100%" }}
-            onClick={handleMapClick}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {position && (
-              <Marker position={position}>
-                <Popup>Your selected location</Popup>
-              </Marker>
-            )}
-          </MapContainer>
-          <TextField
-            label="Address"
-            variant="outlined"
-            value={address}
-            onChange={handleAddressChange}
-            style={{ marginTop: "10px" }}
+          <FieldRender
+            fields={[
+              createField("name", "Name", {
+                value: formData?.name,
+              }),
+              createField("email", "Email", {
+                value: formData?.email,
+              }),
+              createField("phone", "Phone Number", {
+                value: formData?.phone,
+              }),
+              createField("vehicleAssigned", "Vehicle Assigned", {
+                value: formData?.profession,
+              }),
+            ]}
           />
           <Stack
             direction="row"

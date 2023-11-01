@@ -114,7 +114,7 @@ export const PageBodyHeader = styled(Box)`
 `;
 
 export const PageBodyContent = styled(Box)`
-  padding: 30px;
+  padding: 20px;
   width: 100%;
   height: calc(100vh - 60px);
   overflow-y: auto;

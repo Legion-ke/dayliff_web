@@ -26,12 +26,7 @@ export const getMenuItems = () => {
           title: "Routes",
           exact: true,
         },
-        {
-          href: `/tasks/returns/`,
-          icon: <i className="bx bx-book" />,
-          title: "Returns",
-          exact: true,
-        },
+
         // {
         //   href: `/tasks/rconfirmation/`,
         //   icon: <i className="bx bx-book" />,
@@ -54,6 +49,12 @@ export const getMenuItems = () => {
           href: `/management/vehicles`,
           icon: <i className="bx bx-book" />,
           title: "Vehicles",
+          exact: true,
+        },
+        {
+          href: `/management/drivers/`,
+          icon: <i className="bx bx-book" />,
+          title: "Drivers",
           exact: true,
         },
       ],
