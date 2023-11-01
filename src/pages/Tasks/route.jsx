@@ -143,7 +143,7 @@ export default function Directions() {
         onRowClicked={handleEdit}
         buttons={[
           {
-            children: "New Order",
+            children: "New Route",
             onClick: handleNew,
           },
         ]}
@@ -151,7 +151,7 @@ export default function Directions() {
       <Modal
         open={open}
         onClose={toggleModal}
-        title={`${selected ? "Edit" : "New"} User`}
+        title={`${selected ? "Edit" : "New"} Route`}
         size="large"
       >
         <form onSubmit={onSubmit}>

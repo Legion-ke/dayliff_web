@@ -26,6 +26,18 @@ export const getMenuItems = () => {
           title: "Routes",
           exact: true,
         },
+        {
+          href: `/tasks/returns/`,
+          icon: <i className="bx bx-book" />,
+          title: "Returns",
+          exact: true,
+        },
+        {
+          href: `/tasks/rconfirmation/`,
+          icon: <i className="bx bx-book" />,
+          title: "Return Confirmation",
+          exact: true,
+        },
       ],
     },
     {

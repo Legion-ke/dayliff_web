@@ -12,12 +12,16 @@ import { FieldRender, useFormData } from "../../components/forms";
 import { Stack } from "@mui/material";
 
 const initForm = {
-  regNo: "",
-  loadCapacity: "",
-  vehicleType: "",
+  rconfirmation_id: "",
+  order_id: "",
+  rconfirmation_date:"",
+  recipient_name: "",
+  signature_image:"",
+  order_image: "",
+  comments:" ",
 };
 
-export default function Vehicles() {
+export default function Returns() {
   const { confirm, alertError, alertSuccess } = useAlerts();
   const {
     data: users,
@@ -45,7 +49,7 @@ export default function Vehicles() {
   const deleteData = (id) => {
     del(`/husers/${id}`)
       .then(() => {
-        alertSuccess(`staff deleted successfully`);
+        alertSuccess(`return deleted successfully`);
         refetch();
       })
       .catch((err) => {
@@ -56,10 +60,15 @@ export default function Vehicles() {
   const handleEdit = (row) => {
     setSelected(row);
     setFormData({
-      name: row.name,
-      email: row.email,
-      phone: row.phone,
-      profession: row.profession,
+      rconfirmation_id: row.rconfirmation_id,
+      order_id: row.order_id,
+      rconfirmation_date: row.rconfirmation_date,
+      receipient_name: row.recipient_name,
+      signature_image: row.signature_image,
+      order_id: row.signature_image,
+      comments: row.comments,
+      create_at: row.create_at,
+      update_at: row.update_at,
     });
     toggleModal();
   };
@@ -79,7 +88,7 @@ export default function Vehicles() {
 
     put(`/husers/${selected.id}`, data)
       .then(() => {
-        alertSuccess(`User updated successfully`);
+        alertSuccess(`Return updated successfully`);
         toggleModal();
         refetch();
       })
@@ -90,7 +99,7 @@ export default function Vehicles() {
   const createData = () => {
     post(`/husers`, formData)
       .then(() => {
-        alertSuccess(`User created successfully`);
+        alertSuccess(`Return created successfully`);
         toggleModal();
         refetch();
       })
@@ -101,8 +110,8 @@ export default function Vehicles() {
 
   const deleteVendor = (row) => {
     confirm({
-      title: "Delete user!",
-      message: "Are you sure you want to delete this User?",
+      title: "Delete Return!",
+      message: "Are you sure you want to delete this Return?",
       onConfirm: () => {
         deleteData(row.id);
       },
@@ -124,18 +133,43 @@ export default function Vehicles() {
 
   const columns = [
     {
-      name: "Registration No. ",
-      selector: (row) => <TextView primary={row.regNo} />,
+        name: "Return ID",
+        selector: (row) => <TextView primary={row.rconfirmation_id} />,
     },
+    {
+        name: "OrderNo",
+        selector: (row) => <TextView primary={row.name} />,
+    },
+    {
+        name: "Confrimation Date",
+        selector: (row) => <TextView primary={row.rconfirmation_date} />,
+    },
+    {
+        name: "Recipient Name",
+        selector: (row) => <TextView primary={row.recipient_name} />,
+    },
+    {
+        name: "Signature Image",
+        selector: (row) => <TextView primary={row.signature_image} />,
+    },
+    {
+        name: "Order Image",
+        selector: (row) => <TextView primary={row.order_image} />,
 
-    {
-      name: "Load Capacity",
-      selector: (row) => <TextView primary={row.loadCapacity} />,
     },
     {
-      name: "Vehicle Type",
-      selector: (row) => <TextView primary={row.vehicleType} />,
+        name: "Comments",
+        selector: (row) => <TextView primary={row.comments} />,
     },
+    {
+        name: "Created At",
+        selector: (row) => <TextView primary={row.create_at} />,
+    },
+    {
+        name: "Update At",
+        selector: (row) => <TextView primary={row.update_at} />,
+      },
+    
 
     {
       selector: (row) => <TableMenus options={dropMenuOptions} row={row} />,
@@ -154,7 +188,7 @@ export default function Vehicles() {
         onRowClicked={handleEdit}
         buttons={[
           {
-            children: "New Vehicles",
+            children: "New Return",
             onClick: handleNew,
           },
         ]}
@@ -162,21 +196,34 @@ export default function Vehicles() {
       <Modal
         open={open}
         onClose={toggleModal}
-        title={`${selected ? "Edit" : "New"} Vehicle`}
+        title={`${selected ? "Edit" : "New"} Return`}
         size="large"
       >
         <form onSubmit={onSubmit}>
           <FieldRender
             fields={[
-              createField("regNo", "Registration No", {
+              createField("rconfirmation_id:", "Return ID", {
                 value: formData?.name,
               }),
-              createField("loadCapacity", "Load Capacity", {
-                value: formData?.email,
+              createField("order_id", "Order ID", {
+                value: formData?.name,
               }),
-              createField("vehicleType", "Vehicle Type", {
-                value: formData?.phone,
+              createField("rconfirmation_date", "Confirmation Date", {
+                value: formData?.name,
               }),
+              createField("recipient_name", "Recipient Name", {
+                value: formData?.name,
+              }),
+              createField("signature_image", "signature Image", {
+                value: formData?.name,
+              }),
+              createField("order_image", "Order Image", {
+                value: formData?.name,
+              }),
+              createField("comments", "Comment", {
+                value: formData?.name,
+              }),
+
             ]}
           />
           <Stack
