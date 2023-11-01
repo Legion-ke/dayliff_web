@@ -21,7 +21,7 @@ export default function PieGraph() {
           fill: "gray",
         },
       }}
-      height={400}
+      height={300}
     />
   );
 }

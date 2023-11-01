@@ -4,7 +4,7 @@ import { BarChart } from "@mui/x-charts/BarChart";
 export default function BarGraph({ pData, label, xLabels }) {
   return (
     <BarChart
-      width={700}
+      width={500}
       height={400}
       series={[
         {
