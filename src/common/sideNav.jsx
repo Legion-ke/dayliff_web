@@ -10,12 +10,23 @@ import {
 } from "./styled";
 import { Box } from "@mui/material";
 import React from "react";
+import davisLogo from "../assets/davis.png";
 
 const Sidebar = ({ menus }) => {
   const navigate = useNavigate();
   return (
     <SideNav>
-      <SideNavHeader onClick={() => navigate("/")}>Dayliff Admin</SideNavHeader>
+      <SideNavHeader onClick={() => navigate("/")}>
+        <img
+          src={davisLogo}
+          alt="logo"
+          style={{
+            width: "150px",
+            height: "auto",
+            // margin: "0 auto",
+          }}
+        />
+      </SideNavHeader>
       <SideNavBody>
         {menus.map((group, index) => (
           <Group key={index} {...group} />
