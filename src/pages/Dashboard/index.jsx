@@ -12,5 +12,6 @@ export default function Dashboard() {
         onRowClicked={() => {}}
       />
     </SmoothBox>
+    
   );
 }

@@ -12,13 +12,15 @@ import { FieldRender, useFormData } from "../../components/forms";
 import { Stack } from "@mui/material";
 
 const initForm = {
-  rconfirmation_id: "",
   order_id: "",
-  rconfirmation_date:"",
-  recipient_name: "",
-  signature_image:"",
-  order_image: "",
-  comments:" ",
+  customer_name: "",
+  customer_phone:"",
+  return_date: "",
+  delivery_date:"",
+  destination_address: "",
+  return_status:" ",
+  route_id:"",
+
 };
 
 export default function Returns() {
@@ -60,15 +62,14 @@ export default function Returns() {
   const handleEdit = (row) => {
     setSelected(row);
     setFormData({
-      rconfirmation_id: row.rconfirmation_id,
       order_id: row.order_id,
-      rconfirmation_date: row.rconfirmation_date,
-      receipient_name: row.recipient_name,
-      signature_image: row.signature_image,
-      order_id: row.signature_image,
-      comments: row.comments,
-      create_at: row.create_at,
-      update_at: row.update_at,
+      customer_name: row.customer_name,
+      customer_phone: row.customer_phone,
+      return_date: row.return_date,
+      delivery_date: row.delivery_date,
+      destination_address: row.destination_address,
+      return_status: row.return_status,
+      route_id: row.route_id,
     });
     toggleModal();
   };
@@ -133,44 +134,34 @@ export default function Returns() {
 
   const columns = [
     {
-        name: "Return ID",
-        selector: (row) => <TextView primary={row.rconfirmation_id} />,
+        name: "Order ID",
+        selector: (row) => <TextView primary={row.order_id} />,
     },
     {
-        name: "OrderNo",
-        selector: (row) => <TextView primary={row.name} />,
+        name: "Customer Phone",
+        selector: (row) => <TextView primary={row.customer_phone} />,
     },
     {
-        name: "Confrimation Date",
-        selector: (row) => <TextView primary={row.rconfirmation_date} />,
+        name: "Return Date",
+        selector: (row) => <TextView primary={row.return_date} />,
     },
     {
-        name: "Recipient Name",
-        selector: (row) => <TextView primary={row.recipient_name} />,
+        name: "Delivery Date",
+        selector: (row) => <TextView primary={row.delivery_date} />,
     },
     {
-        name: "Signature Image",
-        selector: (row) => <TextView primary={row.signature_image} />,
+        name: "Destination Address",
+        selector: (row) => <TextView primary={row.destination_address} />,
     },
     {
-        name: "Order Image",
-        selector: (row) => <TextView primary={row.order_image} />,
+        name: "Return Status",
+        selector: (row) => <TextView primary={row.return_status} />,
 
     },
     {
-        name: "Comments",
-        selector: (row) => <TextView primary={row.comments} />,
+        name: "Route ID",
+        selector: (row) => <TextView primary={row.route_id} />,
     },
-    {
-        name: "Created At",
-        selector: (row) => <TextView primary={row.create_at} />,
-    },
-    {
-        name: "Update At",
-        selector: (row) => <TextView primary={row.update_at} />,
-      },
-    
-
     {
       selector: (row) => <TableMenus options={dropMenuOptions} row={row} />,
       ...actionProps,
@@ -202,27 +193,31 @@ export default function Returns() {
         <form onSubmit={onSubmit}>
           <FieldRender
             fields={[
-              createField("rconfirmation_id:", "Return ID", {
+              createField("order_ID:", "Order ID", {
                 value: formData?.name,
               }),
-              createField("order_id", "Order ID", {
+              createField("customer_name", "Customer Name", {
                 value: formData?.name,
               }),
-              createField("rconfirmation_date", "Confirmation Date", {
+              createField("customer_phone", "Customer Phone", {
                 value: formData?.name,
               }),
-              createField("recipient_name", "Recipient Name", {
+              createField("return_date", "Return Date", {
                 value: formData?.name,
               }),
-              createField("signature_image", "signature Image", {
+              createField("delivery_date", "Delivery Date", {
                 value: formData?.name,
               }),
-              createField("order_image", "Order Image", {
+              createField("destination_address", "Destination Address", {
                 value: formData?.name,
               }),
-              createField("comments", "Comment", {
+              createField("return_status", "Return Status", {
                 value: formData?.name,
               }),
+              createField("route_id", "Route ID", {
+                value: formData?.name,
+              }),
+
 
             ]}
           />

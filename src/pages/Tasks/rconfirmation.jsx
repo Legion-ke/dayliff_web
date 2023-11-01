@@ -65,10 +65,10 @@ export default function ReturnConfirmation() {
       rconfirmation_date: row.rconfirmation_date,
       receipient_name: row.recipient_name,
       signature_image: row.signature_image,
-      order_id: row.signature_image,
+      order_image: row.order_image,
       comments: row.comments,
-      create_at: row.create_at,
-      update_at: row.update_at,
+      
+
     });
     toggleModal();
   };
