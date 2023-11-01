@@ -1,3 +1,3 @@
 window._env_ = {
-  API_URL: "http://134.209.116.222/api/",
+  API_URL: "https://starfish-app-29qhl.ondigitalocean.app/api/v1/",
 };
