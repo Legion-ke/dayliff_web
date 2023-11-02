@@ -125,16 +125,16 @@ export default function Vehicles() {
   const columns = [
     {
       name: "Registration No. ",
-      selector: (row) => <TextView primary={row.name} />,
+      selector: (row) => <TextView primary={row.regNo} />,
     },
 
     {
       name: "Load Capacity",
-      selector: (row) => <TextView primary={row.email} />,
+      selector: (row) => <TextView primary={row.loadCapacity} />,
     },
     {
       name: "Vehicle Type",
-      selector: (row) => <TextView primary={row.phone} />,
+      selector: (row) => <TextView primary={row.vehicleType} />,
     },
 
     {

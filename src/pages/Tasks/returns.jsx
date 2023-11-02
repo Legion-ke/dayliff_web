@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 import { CButton, Modal, Table, useAlerts } from "ochom-react-components";
 import { Edit } from "@mui/icons-material";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -10,37 +9,30 @@ import { SmoothBox } from "../../common/styled";
 import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
-import { Chip, Stack } from "@mui/material";
-import moment from "moment/moment";
+import { Stack } from "@mui/material";
 
 const initForm = {
-  orderNo: "",
+  order_id: "",
   customer_name: "",
   customer_phone: "",
-  order_status: null,
+  return_date: "",
   delivery_date: "",
-  destination_address: null,
-  route_id: null,
+  destination_address: "",
+  return_status: " ",
+  route_id: "",
 };
-const statusType = [
-  { value: "PENDING", label: "Pending" },
-  { value: "TRANSIT", label: "Transit" },
-  { value: "COMPLETED", label: "Completed" },
-  { value: "CANCELLED", label: "Cancelled" },
-  { value: "PARTIAL", label: "Partial" },
-];
-export default function Orders() {
+
+export default function Returns() {
   const { confirm, alertError, alertSuccess } = useAlerts();
   const {
-    data: orders,
+    data: users,
     loading,
     error,
     put,
     del,
     post,
     refetch,
-  } = useAPI("/orders");
-  console.log("orders: ", orders);
+  } = useAPI("/husers");
   const { createField, formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
@@ -58,7 +50,7 @@ export default function Orders() {
   const deleteData = (id) => {
     del(`/husers/${id}`)
       .then(() => {
-        alertSuccess(`staff deleted successfully`);
+        alertSuccess(`return deleted successfully`);
         refetch();
       })
       .catch((err) => {
@@ -69,10 +61,14 @@ export default function Orders() {
   const handleEdit = (row) => {
     setSelected(row);
     setFormData({
-      name: row.name,
-      email: row.email,
-      phone: row.phone,
-      profession: row.profession,
+      order_id: row.order_id,
+      customer_name: row.customer_name,
+      customer_phone: row.customer_phone,
+      return_date: row.return_date,
+      delivery_date: row.delivery_date,
+      destination_address: row.destination_address,
+      return_status: row.return_status,
+      route_id: row.route_id,
     });
     toggleModal();
   };
@@ -87,19 +83,12 @@ export default function Orders() {
     }
   };
 
-  const statusChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      order_status: e.target.value,
-    }));
-  };
-
   const updateData = () => {
     const data = { ...formData };
 
     put(`/husers/${selected.id}`, data)
       .then(() => {
-        alertSuccess(`User updated successfully`);
+        alertSuccess(`Return updated successfully`);
         toggleModal();
         refetch();
       })
@@ -110,7 +99,7 @@ export default function Orders() {
   const createData = () => {
     post(`/husers`, formData)
       .then(() => {
-        alertSuccess(`User created successfully`);
+        alertSuccess(`Return created successfully`);
         toggleModal();
         refetch();
       })
@@ -121,23 +110,12 @@ export default function Orders() {
 
   const deleteVendor = (row) => {
     confirm({
-      title: "Delete user!",
-      message: "Are you sure you want to delete this User?",
+      title: "Delete Return!",
+      message: "Are you sure you want to delete this Return?",
       onConfirm: () => {
         deleteData(row.id);
       },
     });
-  };
-
-  const getStatusColor = (status) => {
-    switch (status) {
-      case "delivered":
-        return "success";
-      case "processing":
-        return "info";
-      default:
-        return "warning";
-    }
   };
 
   let dropMenuOptions = [
@@ -155,55 +133,28 @@ export default function Orders() {
 
   const columns = [
     {
-      name: "OrderNo",
-      selector: (row) => <TextView primary={row._id} />,
+      name: "Order ID",
+      selector: (row) => <TextView primary={row.order_id} />,
     },
     {
-      name: "Order Image",
-      selector: () => <img src="/davis.png" alt="" />,
+      name: "Customer Phone",
+      selector: (row) => <TextView primary={row.customer_phone} />,
     },
     {
-      name: "Customer",
-      selector: (row) => (
-        <TextView primary={row.customer_name} secondary={row.customer_phone} />
-      ),
+      name: "Return Date",
+      selector: (row) => <TextView primary={row.return_date} />,
     },
-
+    {
+      name: "Delivery Date",
+      selector: (row) => <TextView primary={row.delivery_date} />,
+    },
     {
       name: "Destination Address",
-      selector: (row) => (
-        <TextView
-          primary={row.destination_address.long}
-          secondary={row.destination_address.lat}
-        />
-      ),
-    },
-    {
-      name: "Route",
-      selector: (row) => <TextView primary={row.name} />,
-    },
-    {
-      name: "Order Date",
-      selector: (row) => (
-        <TextView primary={moment(row.created_at).format("DD/MM/YYYY")} />
-      ),
-    },
-    {
-      name: "Delivery date",
-      selector: (row) => (
-        <TextView primary={moment(row.delivery_date).format("DD/MM/YYYY")} />
-      ),
+      selector: (row) => <TextView primary={row.destination_address} />,
     },
     {
       name: "Status",
-      selector: () => (
-        <Chip
-          label="delivery"
-          color={getStatusColor("delivery")}
-          size=""
-          variant="outlined"
-        />
-      ),
+      selector: (row) => <TextView primary={row.return_status} />,
     },
 
     {
@@ -218,12 +169,12 @@ export default function Orders() {
         loading={loading}
         error={error}
         columns={columns}
-        data={orders}
+        data={users.products}
         showSearch
         onRowClicked={handleEdit}
         buttons={[
           {
-            children: "New Order",
+            children: "New Return",
             onClick: handleNew,
           },
         ]}
@@ -231,35 +182,35 @@ export default function Orders() {
       <Modal
         open={open}
         onClose={toggleModal}
-        title={`${selected ? "Edit" : "New"} Order`}
+        title={`${selected ? "Edit" : "New"} Return`}
         size="large"
       >
         <form onSubmit={onSubmit}>
           <FieldRender
             fields={[
+              createField("order_ID:", "Order ID", {
+                value: formData?.name,
+              }),
               createField("customer_name", "Customer Name", {
-                value: formData?.customer_name,
+                value: formData?.name,
               }),
-              createField("customer_phone", "Customer Phone ", {
-                value: formData?.customer_phone,
+              createField("customer_phone", "Customer Phone", {
+                value: formData?.name,
               }),
-
-              createField(`order_status`, "Order Status", {
-                type: "select",
-                grow: { xs: 6 },
-                options: statusType.map((t) => ({
-                  ...t,
-                  value: t.value,
-                  label: t.label,
-                })),
-                value: formData.order_status,
-                onChange: (e) => statusChange(e),
+              createField("return_date", "Return Date", {
+                value: formData?.name,
               }),
-              createField("delivery_date", "Deliver Date", {
-                type: "date-time",
-                grow: { xs: 6 },
-
-                value: formData?.delivery_date,
+              createField("delivery_date", "Delivery Date", {
+                value: formData?.name,
+              }),
+              createField("destination_address", "Destination Address", {
+                value: formData?.name,
+              }),
+              createField("return_status", "Return Status", {
+                value: formData?.name,
+              }),
+              createField("route_id", "Route ID", {
+                value: formData?.name,
               }),
             ]}
           />

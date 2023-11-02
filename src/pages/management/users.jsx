@@ -9,14 +9,26 @@ import { SmoothBox } from "../../common/styled";
 import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
-import { Stack } from "@mui/material";
+import { Chip, Stack } from "@mui/material";
 
 const initForm = {
-  name: "",
+  first_name: "",
+  last_name: "",
   email: "",
-  phone: "",
+  status: null,
+  phone_number: "",
   role: null,
 };
+
+const statusType = [
+  { value: "active", label: "Active" },
+  { value: "inActive", label: "Inactive" },
+];
+
+const roleType = [
+  { value: "admin", label: "Admin" },
+  { value: "driver", label: "Driver" },
+];
 
 export default function Users() {
   const { confirm, alertError, alertSuccess } = useAlerts();
@@ -28,7 +40,8 @@ export default function Users() {
     del,
     post,
     refetch,
-  } = useAPI("/husers");
+  } = useAPI("/users");
+  console.log("users: ", users);
   const { createField, formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
@@ -110,6 +123,17 @@ export default function Users() {
     });
   };
 
+  const getStatusColor = (status) => {
+    switch (status) {
+      case "active":
+        return "success";
+      case "processing":
+        return "info";
+      default:
+        return "warning";
+    }
+  };
+
   let dropMenuOptions = [
     {
       title: "Edit",
@@ -125,21 +149,37 @@ export default function Users() {
 
   const columns = [
     {
-      name: "Name",
-      selector: (row) => <TextView primary={row.name} />,
+      name: "User ID",
+      selector: (row) => <TextView primary={row.user_id} />,
     },
-
+    {
+      name: "Name",
+      selector: (row) => (
+        <TextView primary={row.first_name} secondary={row.last_name} />
+      ),
+    },
     {
       name: "email",
       selector: (row) => <TextView primary={row.email} />,
     },
     {
       name: "Phone Number",
-      selector: (row) => <TextView primary={row.phone} />,
+      selector: (row) => <TextView primary={row.phone_number} />,
     },
     {
       name: "Role",
-      selector: (row) => <TextView primary={row.profession} />,
+      selector: (row) => <TextView primary={row.role} />,
+    },
+    {
+      name: "Status",
+      selector: (row) => (
+        <Chip
+          label={row.status.toUpperCase()}
+          color={getStatusColor(row.status)}
+          size="small"
+          variant="outlined"
+        />
+      ),
     },
 
     {
@@ -154,7 +194,7 @@ export default function Users() {
         loading={loading}
         error={error}
         columns={columns}
-        data={users.products}
+        data={users}
         showSearch
         onRowClicked={handleEdit}
         buttons={[
@@ -183,7 +223,24 @@ export default function Users() {
                 value: formData?.phone,
               }),
               createField("role", "Role", {
-                value: formData?.profession,
+                type: "select",
+                grow: { xs: 6 },
+                options: roleType.map((t) => ({
+                  ...t,
+                  value: t.value,
+                  label: t.label,
+                })),
+                value: formData?.role,
+              }),
+              createField("status", "Status", {
+                type: "select",
+                grow: { xs: 6 },
+                options: statusType.map((t) => ({
+                  ...t,
+                  value: t.value,
+                  label: t.label,
+                })),
+                value: formData?.role,
               }),
             ]}
           />
