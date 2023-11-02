@@ -2,11 +2,12 @@ import Axios from "axios";
 import React from "react";
 
 const axios = Axios.create({
-  baseURL: `${window._env_.API_URL}/auth`,
+  baseURL: `${window._env_.API_URL}`,
 });
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
+  console.log("token: ", token);
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -22,20 +23,14 @@ export const useAuthAPI = () => {
     data: null,
   });
 
-  const whoAmI = async () => {
-    setState((prev) => ({ ...prev, loading: true }));
-    return axios
-      .get("/whoami?src=web")
-      .then((res) => setState((prev) => ({ ...prev, data: res.data })))
-      .catch((err) => setState((prev) => ({ ...prev, error: err })))
-      .finally(() => setState((prev) => ({ ...prev, loading: false })));
-  };
-
   const login = async (payload) => {
     setState((prev) => ({ ...prev, loading: true }));
     return axios
       .post("/login", { ...payload, domain })
-      .then((res) => setState((prev) => ({ ...prev, data: res.data })))
+      .then((res) => {
+        window.localStorage.setItem("token", res.data.token);
+        setState((prev) => ({ ...prev, data: res.data }));
+      })
       .catch((err) => setState((prev) => ({ ...prev, error: err })))
       .finally(() => setState((prev) => ({ ...prev, loading: false })));
   };
@@ -105,7 +100,7 @@ export const useAuthAPI = () => {
 
   return {
     ...state,
-    whoAmI,
+
     login,
     register,
     forgotPassword,

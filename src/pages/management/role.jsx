@@ -10,26 +10,26 @@ import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
 import { FieldRender, useFormData } from "../../components/forms";
 import { Stack } from "@mui/material";
-import moment from "moment";
 
 const initForm = {
-  regNo: "",
-  loadCapacity: "",
-  vehicleType: "",
+  name: "",
+  email: "",
+  phone: "",
+  role: null,
 };
 
-export default function Vehicles() {
+export default function Drivers() {
   const { confirm, alertError, alertSuccess } = useAlerts();
   const {
-    data: vehicles,
+    data: drivers,
     loading,
     error,
     put,
     del,
     post,
     refetch,
-  } = useAPI("/vehicle");
-  console.log("vehicles: ", vehicles);
+  } = useAPI("/drivers");
+  console.log("drivers: ", drivers);
   const { createField, formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
@@ -47,7 +47,7 @@ export default function Vehicles() {
   const deleteData = (id) => {
     del(`/husers/${id}`)
       .then(() => {
-        alertSuccess(`staff deleted successfully`);
+        alertSuccess(`Driver deleted successfully`);
         refetch();
       })
       .catch((err) => {
@@ -81,7 +81,7 @@ export default function Vehicles() {
 
     put(`/husers/${selected.id}`, data)
       .then(() => {
-        alertSuccess(`User updated successfully`);
+        alertSuccess(`Driver updated successfully`);
         toggleModal();
         refetch();
       })
@@ -111,6 +111,17 @@ export default function Vehicles() {
     });
   };
 
+  //   const getStatusColor = (status) => {
+  //     switch (status) {
+  //       case "active":
+  //         return "success";
+  //       case "processing":
+  //         return "info";
+  //       default:
+  //         return "warning";
+  //     }
+  //   };
+
   let dropMenuOptions = [
     {
       title: "Edit",
@@ -126,29 +137,28 @@ export default function Vehicles() {
 
   const columns = [
     {
-      name: "Registration No. ",
-      selector: (row) => <TextView primary={row.plate_number} />,
-    },
-
-    {
-      name: "Load Capacity",
-      selector: (row) => <TextView primary={row.tonnage} />,
+      name: "User ID",
+      selector: (row) => <TextView primary={row._id} />,
     },
     {
-      name: "Vehicle Type",
-      selector: (row) => <TextView primary={row.vehicleType} />,
+      name: "Name",
+      selector: (row) => <TextView primary={row.name} />,
     },
-
     {
-      name: "Vehicle Status",
-      selector: (row) => <TextView primary={row.status} />,
+      name: "email",
+      selector: (row) => <TextView primary={row.email} />,
     },
-
     {
-      name: "Created AT",
-      selector: (row) => (
-        <TextView primary={moment(row.created_at).format("DD/MM/YYYY")} />
-      ),
+      name: "Phone Number",
+      selector: (row) => <TextView primary={row.phone_number} />,
+    },
+    {
+      name: "Role",
+      selector: (row) => <TextView primary={row.role} />,
+    },
+    {
+      name: "Vehicle Assigned",
+      selector: (row) => <TextView primary={row.vehicleAssigned} />,
     },
 
     {
@@ -163,12 +173,12 @@ export default function Vehicles() {
         loading={loading}
         error={error}
         columns={columns}
-        data={vehicles.vehicles}
+        data={drivers}
         showSearch
         onRowClicked={handleEdit}
         buttons={[
           {
-            children: "New Vehicles",
+            children: "New Driver",
             onClick: handleNew,
           },
         ]}
@@ -176,20 +186,23 @@ export default function Vehicles() {
       <Modal
         open={open}
         onClose={toggleModal}
-        title={`${selected ? "Edit" : "New"} Vehicle`}
+        title={`${selected ? "Edit" : "New"} User`}
         size="large"
       >
         <form onSubmit={onSubmit}>
           <FieldRender
             fields={[
-              createField("regNo", "Registration No", {
+              createField("name", "Name", {
                 value: formData?.name,
               }),
-              createField("loadCapacity", "Load Capacity", {
+              createField("email", "Email", {
                 value: formData?.email,
               }),
-              createField("vehicleType", "Vehicle Type", {
+              createField("phone", "Phone Number", {
                 value: formData?.phone,
+              }),
+              createField("vehicleAssigned", "Vehicle Assigned", {
+                value: formData?.profession,
               }),
             ]}
           />

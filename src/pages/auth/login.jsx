@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Button,
@@ -21,7 +21,7 @@ const LoginPage = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [success, setSuccess] = useState(false);
-
+  let navigate = useNavigate();
   const { login, loading, error } = useAuthAPI();
 
   const handleChange = (e) => {
@@ -30,8 +30,7 @@ const LoginPage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  console.log("error", error);
-
+  console.log("formData: ", formData);
   const handleClickShowPassword = () => setShowPassword((show) => !show);
 
   const handleSubmit = (e) => {
@@ -42,7 +41,7 @@ const LoginPage = () => {
 
         // redirect to originating page with the token
         setTimeout(() => {
-          window.location.href = `/`;
+          navigate("/");
         }, 3000);
       })
       .catch((err) => {

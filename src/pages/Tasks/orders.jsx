@@ -14,7 +14,6 @@ import { Chip, Stack } from "@mui/material";
 import moment from "moment/moment";
 
 const initForm = {
-  orderNo: "",
   customer_name: "",
   customer_phone: "",
   order_status: null,
@@ -44,6 +43,7 @@ export default function Orders() {
   const { createField, formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
+  console.log("selected: ", selected);
 
   const handleClose = () => {
     toggleModal();
@@ -69,10 +69,12 @@ export default function Orders() {
   const handleEdit = (row) => {
     setSelected(row);
     setFormData({
-      name: row.name,
-      email: row.email,
-      phone: row.phone,
-      profession: row.profession,
+      customer_name: row.customer_name,
+      customer_phone: row.customer_phone,
+      order_status: null,
+      delivery_date: row.delivery_date,
+      destination_address: row.destination_address,
+      route_id: null,
     });
     toggleModal();
   };
@@ -156,7 +158,7 @@ export default function Orders() {
   const columns = [
     {
       name: "OrderNo",
-      selector: (row) => <TextView primary={row._id} />,
+      selector: (row) => <TextView primary={row.id} />,
     },
     {
       name: "Order Image",
@@ -180,7 +182,7 @@ export default function Orders() {
     },
     {
       name: "Route",
-      selector: (row) => <TextView primary={row.name} />,
+      selector: (row) => <TextView primary={row.route_id} />,
     },
     {
       name: "Order Date",
@@ -196,10 +198,10 @@ export default function Orders() {
     },
     {
       name: "Status",
-      selector: () => (
+      selector: (row) => (
         <Chip
-          label="delivery"
-          color={getStatusColor("delivery")}
+          label={row.order_status.toUpperCase}
+          color={getStatusColor(row.order_status)}
           size=""
           variant="outlined"
         />
@@ -218,7 +220,7 @@ export default function Orders() {
         loading={loading}
         error={error}
         columns={columns}
-        data={orders}
+        data={orders.orders}
         showSearch
         onRowClicked={handleEdit}
         buttons={[
@@ -252,7 +254,7 @@ export default function Orders() {
                   value: t.value,
                   label: t.label,
                 })),
-                value: formData.order_status,
+                value: formData?.order_status,
                 onChange: (e) => statusChange(e),
               }),
               createField("delivery_date", "Deliver Date", {

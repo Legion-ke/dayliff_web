@@ -150,13 +150,11 @@ export default function Users() {
   const columns = [
     {
       name: "User ID",
-      selector: (row) => <TextView primary={row.user_id} />,
+      selector: (row) => <TextView primary={row.id} />,
     },
     {
       name: "Name",
-      selector: (row) => (
-        <TextView primary={row.first_name} secondary={row.last_name} />
-      ),
+      selector: (row) => <TextView primary={row.name} />,
     },
     {
       name: "email",
@@ -194,7 +192,7 @@ export default function Users() {
         loading={loading}
         error={error}
         columns={columns}
-        data={users}
+        data={users.users}
         showSearch
         onRowClicked={handleEdit}
         buttons={[

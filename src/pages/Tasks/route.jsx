@@ -33,10 +33,21 @@ export default function Directions() {
     post,
     refetch,
   } = useAPI("/routes");
+  console.log("routes: ", routes);
 
   const { formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
+
+  const convertToJson = (destinationAddress) => {
+    try {
+      const destinationJSON = JSON.parse(destinationAddress);
+      return destinationJSON;
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      return null;
+    }
+  };
 
   const handleClose = () => {
     toggleModal();
@@ -220,11 +231,15 @@ export default function Directions() {
   const columns = [
     {
       name: "Route ID",
-      selector: (row) => <TextView primary={row.route_id} />,
+      selector: (row) => <TextView primary={row.id} />,
+    },
+    {
+      name: "Route Name",
+      selector: (row) => <TextView primary={row.route_name} />,
     },
     {
       name: "Driver",
-      selector: (row) => <TextView primary={row.name} />,
+      selector: (row) => <TextView primary={row.driver_id} />,
     },
     {
       name: "Origin Address",
@@ -276,7 +291,7 @@ export default function Directions() {
         loading={loading}
         error={error}
         columns={columns}
-        data={routes}
+        data={routes.routes}
         showSearch
         onRowClicked={handleEdit}
         buttons={[
