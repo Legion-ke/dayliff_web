@@ -8,9 +8,12 @@ import { TextView } from "../../common/text-view";
 import { SmoothBox } from "../../common/styled";
 import { useModal } from "../../app/utils";
 import { useAPI } from "../../hooks/useAPI";
-import { FieldRender, useFormData } from "../../components/forms";
-import { Chip, Stack, TextField } from "@mui/material";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import { useFormData } from "../../components/forms";
+import { Box, Chip, MenuItem, Paper, Stack, TextField } from "@mui/material";
+import PlacesAutocomplete, {
+  geocodeByAddress,
+  getLatLng,
+} from "react-places-autocomplete";
 
 const initForm = {
   distance_in_km: "",
@@ -30,9 +33,8 @@ export default function Directions() {
     post,
     refetch,
   } = useAPI("/routes");
-  console.log("am orders: ", routes);
 
-  const { createField, formData, setFormData } = useFormData(initForm);
+  const { formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
 
@@ -79,39 +81,117 @@ export default function Directions() {
     toggleModal();
   };
 
+  const [originAddress, setOriginAddress] = useState({
+    lat: null,
+    lng: null,
+    placeName: "",
+  });
+  const [destinationAddress, setDestinationAddress] = useState({
+    lat: null,
+    lng: null,
+    placeName: "",
+  });
+
+  const handleSelect = async (value) => {
+    const results = await geocodeByAddress(value);
+    const latLng = await getLatLng(results[0]);
+    setOriginAddress({
+      lat: latLng.lat,
+      lng: latLng.lng,
+      placeName: results[0].formatted_address,
+    });
+  };
+
+  const handleDestinationSelect = async (value) => {
+    const results = await geocodeByAddress(value);
+    const latLng = await getLatLng(results[0]);
+    setDestinationAddress({
+      lat: latLng.lat,
+      lng: latLng.lng,
+      placeName: results[0].formatted_address,
+    });
+  };
+
+  let calculateDistanceAndDuration = (lat1, lon1, lat2, lon2) => {
+    const earthRadius = 6371;
+    const radLat1 = (lat1 * Math.PI) / 180;
+    const radLon1 = (lon1 * Math.PI) / 180;
+    const radLat2 = (lat2 * Math.PI) / 180;
+    const radLon2 = (lon2 * Math.PI) / 180;
+
+    const latDiff = radLat2 - radLat1;
+    const lonDiff = radLon2 - radLon1;
+    const a =
+      Math.sin(latDiff / 2) ** 2 +
+      Math.cos(radLat1) * Math.cos(radLat2) * Math.sin(lonDiff / 2) ** 2;
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    // Calculate the distance in kilometers
+    const distanceInKm = earthRadius * c;
+
+    // Calculate estimated duration in minutes (you can adjust this based on your use case)
+    const estimatedDurationMinutes = distanceInKm * 12; // Adjust the factor as needed
+    return {
+      distanceInKm,
+      estimatedDurationMinutes,
+    };
+  };
+
   const onSubmit = (e) => {
     e.preventDefault();
-    const data = { ...formData };
+    // const data = { ...formData };
     if (selected) {
-      updateData({ variables: { id: selected.id, data } });
+      // updateData({ variables: { id: selected.id, data } });
     } else {
-      createData({ variables: { data } });
+      const { distanceInKm, estimatedDurationMinutes } =
+        calculateDistanceAndDuration(
+          originAddress.lat,
+          originAddress.lng,
+          destinationAddress.lat,
+          destinationAddress.lng
+        );
+      console.log("distanceInKm: ", distanceInKm);
+      let data = {
+        distance_in_km: distanceInKm,
+        estimated_duration_minutes: estimatedDurationMinutes,
+        destination_address: {
+          lat: destinationAddress.lat,
+          long: destinationAddress.lng,
+        },
+        origin_address: {
+          lat: originAddress.lat,
+          long: originAddress.lng,
+        },
+      };
+
+      createData(data);
     }
   };
 
-  const updateData = () => {
-    const data = { ...formData };
+  // const updateData = () => {
+  //   const data = { ...formData };
 
-    put(`/husers/${selected.id}`, data)
-      .then(() => {
-        alertSuccess(`User updated successfully`);
-        toggleModal();
-        refetch();
-      })
-      .catch((err) => {
-        alertError(err.message);
-      });
-  };
-  const createData = () => {
-    post(`/routes`, formData)
-      .then(() => {
-        alertSuccess(`Route created successfully`);
-        toggleModal();
-        refetch();
-      })
-      .catch((err) => {
-        alertError(err.message);
-      });
+  //   put(`/husers/${selected.id}`, data)
+  //     .then(() => {
+  //       alertSuccess(`User updated successfully`);
+  //       toggleModal();
+  //       refetch();
+  //     })
+  //     .catch((err) => {
+  //       alertError(err.message);
+  //     });
+  // };
+  const createData = (data) => {
+    console.log(data);
+    // post(`/routes`, formData)
+    //   .then(() => {
+    //     alertSuccess(`Route created successfully`);
+    //     toggleModal();
+    //     refetch();
+    //   })
+    //   .catch((err) => {
+    //     alertError(err.message);
+    //   });
   };
 
   const deleteVendor = (row) => {
@@ -189,30 +269,6 @@ export default function Directions() {
     },
   ];
 
-  const [position, setPosition] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState({
-    latitude: 0,
-    longitude: 0,
-  });
-  const [address, setAddress] = useState("");
-
-  const handleMapClick = (e) => {
-    const { lat, lng } = e.latlng;
-    setPosition([lat, lng]);
-    setSelectedLocation({ latitude: lat, longitude: lng });
-  };
-
-  const handleAddressChange = (e) => {
-    setAddress(e.target.value);
-  };
-
-  const calculateDistance = () => {
-    // You can calculate the distance between two points (selectedLocation and another location) here using geolib.
-    // For demonstration, let's calculate the distance to a hardcoded point.
-    const otherLocation = { latitude: 51.5, longitude: 0 };
-    const distance = getDistance(selectedLocation, otherLocation);
-    alert(`Distance: ${distance} meters`);
-  };
   return (
     <SmoothBox>
       <Table
@@ -237,26 +293,87 @@ export default function Directions() {
         size="large"
       >
         <form onSubmit={onSubmit}>
-          <MapContainer
-            center={[51.505, -0.09]} // Initial map center
-            zoom={13}
-            style={{ height: "400px", width: "100%" }}
-            onClick={handleMapClick}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            {position && (
-              <Marker position={position}>
-                <Popup>Your selected location</Popup>
-              </Marker>
-            )}
-          </MapContainer>
-          <TextField
-            label="Address"
-            variant="outlined"
-            value={address}
-            onChange={handleAddressChange}
-            style={{ marginTop: "10px" }}
-          />
+          <Box sx={{ pb: 2 }}>
+            <PlacesAutocomplete
+              value={originAddress.placeName}
+              onChange={(value) => setOriginAddress({ placeName: value })}
+              onSelect={handleSelect}
+            >
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading,
+              }) => (
+                <div>
+                  <TextField
+                    label="Origin address"
+                    {...getInputProps({
+                      placeholder: "Search Places ...",
+                      style: { width: "100%" },
+                    })}
+                  />
+                  <Paper>
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map((suggestion, index) => {
+                      const style = {
+                        backgroundColor: suggestion.active ? "#41b6e6" : "#fff",
+                      };
+                      return (
+                        <MenuItem
+                          key={index}
+                          {...getSuggestionItemProps(suggestion, { style })}
+                        >
+                          {suggestion.description}
+                        </MenuItem>
+                      );
+                    })}
+                  </Paper>
+                </div>
+              )}
+            </PlacesAutocomplete>
+          </Box>
+          <Box>
+            <PlacesAutocomplete
+              value={destinationAddress.placeName}
+              onChange={(value) => setDestinationAddress({ placeName: value })}
+              onSelect={handleDestinationSelect}
+            >
+              {({
+                getInputProps,
+                suggestions,
+                getSuggestionItemProps,
+                loading,
+              }) => (
+                <>
+                  <TextField
+                    label="Destination address"
+                    {...getInputProps({
+                      placeholder: "Search Places ...",
+                      style: { width: "100%" },
+                    })}
+                  />
+                  <Paper>
+                    {loading && <div>Loading...</div>}
+                    {suggestions.map((suggestion, index) => {
+                      const style = {
+                        backgroundColor: suggestion.active ? "#41b6e6" : "#fff",
+                      };
+                      return (
+                        <MenuItem
+                          key={index}
+                          {...getSuggestionItemProps(suggestion, { style })}
+                        >
+                          {suggestion.description}
+                        </MenuItem>
+                      );
+                    })}
+                  </Paper>
+                </>
+              )}
+            </PlacesAutocomplete>
+          </Box>
+
           <Stack
             direction="row"
             spacing={2}

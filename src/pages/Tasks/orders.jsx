@@ -40,6 +40,7 @@ export default function Orders() {
     post,
     refetch,
   } = useAPI("/orders");
+  console.log("orders: ", orders);
   const { createField, formData, setFormData } = useFormData(initForm);
   const [open, toggleModal] = useModal();
   const [selected, setSelected] = useState(null);
@@ -156,6 +157,10 @@ export default function Orders() {
     {
       name: "OrderNo",
       selector: (row) => <TextView primary={row._id} />,
+    },
+    {
+      name: "Order Image",
+      selector: () => <img src="/davis.png" alt="" />,
     },
     {
       name: "Customer",
